@@ -5,7 +5,7 @@
 <p>
 
 
-Here's a definition, taken from [this article](https://www.researchgate.net/profile/Georges_Grinstein/publication/221152759_Dimensional_Anchors_A_Graphic_Primitive_for_Multidimensional_Multivariate_Information_Visualizations/links/02e7e51cc10ff8a1c9000000.pdf):
+Here's a definition, taken from [this excellent article](https://www.researchgate.net/profile/Georges_Grinstein/publication/221152759_Dimensional_Anchors_A_Graphic_Primitive_for_Multidimensional_Multivariate_Information_Visualizations/links/02e7e51cc10ff8a1c9000000.pdf):
 
 > Radviz, described in [this article](http://www.cs.uml.edu/~phoffman/dna1/), attaches to each data point fixed springs each of which is also attached at points around a circle. The springs represent dimensions of the data. The data points are displayed at the position where the sum of the spring forces is zero. The spring force K for each spring is the value of the data point for that dimension.
 
@@ -23,6 +23,7 @@ var data = [
     {"sepalLength": 4.7, "sepalWidth": 3.2, "petalLength": 1.3, "petalWidth": 0.2, "species": "setosa"},
     {"sepalLength": 4.6, "sepalWidth": 3.1, "petalLength": 1.5, "petalWidth": 0.2, "species": "setosa"}
 ];
+
 var radviz = radvizComponent()
     .config({
         el: document.querySelector('.container'), // container node or selector
@@ -37,7 +38,21 @@ var radviz = radvizComponent()
         dotRadius: 4, // radius of each dot
         useRepulsion: false // special repulsion effect to spread the nodes from each others so they can be better selected
     })
+    .on('panelEnter', 'panelLeave', 'dotEnter', 'dotLeave', function () {
+        // mouse entered the circular panel
+    })
+    .on('panelLeave', function () {
+        // mouse left the circular panel
+    })
+    .on('dotEnter', function () {
+        // mouse entered a dot
+    })
+    .on('dotLeave', function () {
+        // mouse left a dot
+    })
     .render(data);
 ```
 
-You can see the fancy useRepulsion in action in /example/iris.html
+## Examples
+* [Energy production in the U.S.](http://biovisualize.github.io/radviz/example/energy.html) shows basic features, styling and events
+* [Iris dataset](http://biovisualize.github.io/radviz/example/iris.html) shows the fancy useRepulsion in action

@@ -8,8 +8,9 @@ var radvizComponent = function(){
         dimensions: [],
         drawLinks: true,
         zoomFactor: 1,
-        dotRadius: 4,
+        dotRadius: 6,
         useRepulsion: false,
+        useTooltips: true,
         tooltipFormatter: function(d){ return d; }
     };
 
@@ -17,7 +18,7 @@ var radvizComponent = function(){
 
     var force = d3.layout.force()
         .chargeDistance(0)
-        .charge(-20)
+        .charge(-60)
         .friction(0.5);
 
     var tooltip = tooltipComponent('#tooltip');
@@ -81,7 +82,7 @@ var radvizComponent = function(){
 
         if(config.useRepulsion){
             root.on('mouseenter', function(d){
-                force.chargeDistance(60).alpha(0.2);
+                force.chargeDistance(80).alpha(0.2);
                 events.panelEnter();
             });
             root.on('mouseleave', function(d){
@@ -106,16 +107,19 @@ var radvizComponent = function(){
             .attr({
                 r: config.dotRadius,
                 fill: function(d){ return config.colorScale(config.colorAccessor(d)); }
-            })
-            .on('mouseenter', function(d){
-                var mouse = d3.mouse(config.el);
-                tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
-                events.dotEnter(d);
-            })
-            .on('mouseout', function(d){
-                tooltip.hide();
-                events.dotLeave(d);
             });
+
+            if(config.useTooltips){
+                nodes.on('mouseenter', function(d){
+                    var mouse = d3.mouse(config.el);
+                    tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
+                    events.dotEnter(d);
+                })
+                .on('mouseout', function(d){
+                    tooltip.hide();
+                    events.dotLeave(d);
+                });
+            }
 
 
         // Labels

@@ -39,14 +39,15 @@ var radvizComponent = function() {
         dimensions: [],
         drawLinks: true,
         zoomFactor: 1,
-        dotRadius: 4,
+        dotRadius: 6,
         useRepulsion: false,
+        useTooltips: true,
         tooltipFormatter: function(d) {
             return d;
         }
     };
     var events = d3.dispatch("panelEnter", "panelLeave", "dotEnter", "dotLeave");
-    var force = d3.layout.force().chargeDistance(0).charge(-20).friction(.5);
+    var force = d3.layout.force().chargeDistance(0).charge(-60).friction(.5);
     var tooltip = tooltipComponent("#tooltip");
     var render = function(data) {
         data = addNormalizedValues(data);
@@ -100,7 +101,7 @@ var radvizComponent = function() {
         });
         if (config.useRepulsion) {
             root.on("mouseenter", function(d) {
-                force.chargeDistance(60).alpha(.2);
+                force.chargeDistance(80).alpha(.2);
                 events.panelEnter();
             });
             root.on("mouseleave", function(d) {
@@ -116,14 +117,17 @@ var radvizComponent = function() {
             fill: function(d) {
                 return config.colorScale(config.colorAccessor(d));
             }
-        }).on("mouseenter", function(d) {
-            var mouse = d3.mouse(config.el);
-            tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
-            events.dotEnter(d);
-        }).on("mouseout", function(d) {
-            tooltip.hide();
-            events.dotLeave(d);
         });
+        if (config.useTooltips) {
+            nodes.on("mouseenter", function(d) {
+                var mouse = d3.mouse(config.el);
+                tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
+                events.dotEnter(d);
+            }).on("mouseout", function(d) {
+                tooltip.hide();
+                events.dotLeave(d);
+            });
+        }
         var labelNodes = root.selectAll("circle.label-node").data(dimensionNodes).enter().append("circle").classed("label-node", true).attr({
             cx: function(d) {
                 return d.x;
