@@ -38,21 +38,26 @@ var radviz = radvizComponent()
         dotRadius: 4, // radius of each dot
         useRepulsion: false // special repulsion effect to spread the nodes from each others so they can be better selected
     })
-    .on('panelEnter', 'panelLeave', 'dotEnter', 'dotLeave', function () {
+    .on('panelEnter', function() {
         // mouse entered the circular panel
     })
-    .on('panelLeave', function () {
+    .on('panelLeave', function() {
         // mouse left the circular panel
     })
-    .on('dotEnter', function () {
+    .on('dotEnter', function() {
         // mouse entered a dot
     })
-    .on('dotLeave', function () {
+    .on('dotLeave', function() {
         // mouse left a dot
     })
     .render(data);
 ```
 
 ## Examples
-* [Energy production in the U.S.](http://biovisualize.github.io/radviz/example/energy.html) shows basic features, styling and events
+
+Some examples are available in the example folder:
+
+* [Energy production in the U.S.](http://biovisualize.github.io/radviz/example/energy.html) shows basic features, styling and events (in the console)
 * [Iris dataset](http://biovisualize.github.io/radviz/example/iris.html) shows the fancy useRepulsion in action
+
+You can also try it live on [Blockbuilder](http://blockbuilder.org/biovisualize/a91f514aaf57eabf8e36)

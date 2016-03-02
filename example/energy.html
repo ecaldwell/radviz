@@ -25,6 +25,18 @@
             tooltipFormatter: function(d){
                 return '<h1>' + d.State + '</h1>' +dimensions.map(function(dB){ return dB + ': ' + d[dB]; }).join('<br />');
             }
+        })
+        .on('panelEnter', function() {
+            console.log('panelEnter');
+        })
+        .on('panelLeave', function() {
+            console.log('panelLeave');
+        })
+        .on('dotEnter', function(d) {
+            console.log('dotEnter', d);
+        })
+        .on('dotLeave', function(d) {
+            console.log('dotLeave', d);
         });
 
     // Data from http://catalog.data.gov/dataset/energy-generation-by-state-and-technology-2009-69f4f
