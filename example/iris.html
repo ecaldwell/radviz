@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="../lib/d3.js"></script>
+<!-- <script src="../src/component-utils.js"></script>
+<script src="../src/tooltip-component.js"></script>
+<script src="../src/radviz-component.js"></script> -->
+<script src="../radviz-min.js"></script>
+<style>
+    .panel {
+        stroke: black;
+        fill: white;
+    }
+
+    .bg {
+        fill: white;
+    }
+
+    .link {
+        stroke: silver;
+        stroke-opacity: 0.05
+    }
+
+    .dot {
+        fill-opacity: 0.5;
+    }
+
+    .label-node {
+        fill: silver;
+    }
+
+    .label {
+        fill: gray;
+        pointer-events: none;
+    }
+
+    #tooltip {
+        font-size: 12px;
+        margin-top: 22px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 4px;
+    }
+
+    #tooltip h1 {
+        font-size: 14px;
+        margin: 0;
+    }
+</style>
+</head>
+<body>
+
+<div class="container"></div>
+<div id="tooltip"></div>
+
+<script>
+
+    var dimensions = ['Coal', 'Gas', 'Petroleum', 'Solar', 'Wind', 'Nuclear', 'Biomass', 'Hydro', 'Other'];
+    var radviz = radvizComponent()
+        .config({
+            el: document.querySelector('.container'),
+            colorAccessor: function(d){ return d['Region']; },
+            dimensions: dimensions,
+            tooltipFormatter: function(d){
+                return '<h1>' + d.State + '</h1>' +dimensions.map(function(dB){ return dB + ': ' + d[dB]; }).join('<br />');
+            }
+        });
+
+
+    // Data from http://catalog.data.gov/dataset/energy-generation-by-state-and-technology-2009-69f4f
+    d3.csv('../data/us_state_energy_generation_2009.csv', function(error, data){
+        radviz.render(data);
+    });
+
+</script>
+
+</body>
+</html>
