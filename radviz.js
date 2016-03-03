@@ -41,7 +41,7 @@ var radvizComponent = function() {
         zoomFactor: 1,
         dotRadius: 6,
         useRepulsion: false,
-        useTooltips: true,
+        useTooltip: true,
         tooltipFormatter: function(d) {
             return d;
         }
@@ -58,6 +58,7 @@ var radvizComponent = function() {
         var thetaScale = d3.scale.linear().domain([ 0, dimensionNamesNormalized.length ]).range([ 0, Math.PI * 2 ]);
         var chartRadius = config.size / 2 - config.margin;
         var nodeCount = data.length;
+        var panelSize = config.size - config.margin * 2;
         var dimensionNodes = config.dimensions.map(function(d, i) {
             var angle = thetaScale(i);
             var x = chartRadius + Math.cos(angle) * chartRadius * config.zoomFactor;
@@ -80,7 +81,7 @@ var radvizComponent = function() {
                 });
             });
         });
-        force.size([ config.size, config.size ]).linkStrength(function(d) {
+        force.size([ panelSize, panelSize ]).linkStrength(function(d) {
             return d.value;
         }).nodes(data.concat(dimensionNodes)).links(linksData).start();
         var svg = d3.select(config.el).append("svg").attr({
@@ -117,17 +118,20 @@ var radvizComponent = function() {
             fill: function(d) {
                 return config.colorScale(config.colorAccessor(d));
             }
-        });
-        if (config.useTooltips) {
-            nodes.on("mouseenter", function(d) {
+        }).on("mouseenter", function(d) {
+            if (config.useTooltip) {
                 var mouse = d3.mouse(config.el);
                 tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
-                events.dotEnter(d);
-            }).on("mouseout", function(d) {
+            }
+            events.dotEnter(d);
+            this.classList.add("active");
+        }).on("mouseout", function(d) {
+            if (config.useTooltip) {
                 tooltip.hide();
-                events.dotLeave(d);
-            });
-        }
+            }
+            events.dotLeave(d);
+            this.classList.remove("active");
+        });
         var labelNodes = root.selectAll("circle.label-node").data(dimensionNodes).enter().append("circle").classed("label-node", true).attr({
             cx: function(d) {
                 return d.x;
@@ -145,16 +149,20 @@ var radvizComponent = function() {
                 return d.y;
             },
             "text-anchor": function(d) {
-                return d.x > config.size / 2 ? "start" : "end";
+                if (d.x > panelSize * .4 && d.x < panelSize * .6) {
+                    return "middle";
+                } else {
+                    return d.x > panelSize / 2 ? "start" : "end";
+                }
             },
             "dominant-baseline": function(d) {
-                return d.y > config.size / 2 ? "hanging" : "auto";
+                return d.y > panelSize * .6 ? "hanging" : "auto";
             },
             dx: function(d) {
-                return d.x > config.size / 2 ? "4px" : "-4px";
+                return d.x > panelSize / 2 ? "6px" : "-6px";
             },
             dy: function(d) {
-                return d.y > config.size / 2 ? "4px" : "-4px";
+                return d.y > panelSize * .6 ? "6px" : "-6px";
             }
         }).text(function(d) {
             return d.name;

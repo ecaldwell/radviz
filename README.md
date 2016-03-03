@@ -9,6 +9,15 @@ Here's a definition, taken from [this excellent article](https://www.researchgat
 
 > Radviz, described in [this article](http://www.cs.uml.edu/~phoffman/dna1/), attaches to each data point fixed springs each of which is also attached at points around a circle. The springs represent dimensions of the data. The data points are displayed at the position where the sum of the spring forces is zero. The spring force K for each spring is the value of the data point for that dimension.
 
+## Examples
+
+Let's try a few examples, from the /example folder:
+
+* [Energy production in the U.S.](http://biovisualize.github.io/radviz/example/energy.html) shows basic features, styling and events (in the console and linked bar chart)
+* [Iris dataset](http://biovisualize.github.io/radviz/example/iris.html) shows the fancy useRepulsion in action
+
+You can also try it live on [Blockbuilder](http://blockbuilder.org/biovisualize/a91f514aaf57eabf8e36)
+
 ## Minimal Documentation
 
 Simply add the compiled version to your HTML:
@@ -53,12 +62,3 @@ var radviz = radvizComponent()
     })
     .render(data);
 ```
-
-## Examples
-
-Some examples are available in the example folder:
-
-* [Energy production in the U.S.](http://biovisualize.github.io/radviz/example/energy.html) shows basic features, styling and events (in the console)
-* [Iris dataset](http://biovisualize.github.io/radviz/example/iris.html) shows the fancy useRepulsion in action
-
-You can also try it live on [Blockbuilder](http://blockbuilder.org/biovisualize/a91f514aaf57eabf8e36)
