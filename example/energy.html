@@ -8,10 +8,36 @@
 <script src="../src/radviz-component.js"></script>
 <!-- <script src="../radviz-min.js"></script> -->
 <link rel="stylesheet" type="text/css" href="style.css">
+<style>
+    .item {
+        border: 2px solid white;
+        background-color: skyblue;
+        opacity: 0.8;
+        overflow: visible;
+        padding: 6px 0;
+        white-space: nowrap;
+    }
+    .container, .list-container {
+        float: left;
+    }
+
+    .list-container {
+        padding-top: 50px;
+    }
+
+    .state{
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+</style>
 </head>
 <body>
 
 <div class="container"></div>
+<div class="list-container">
+<div class="state"></div>
+<div class="list"></div>
+</div>
 <div id="tooltip"></div>
 
 <script>
@@ -22,9 +48,7 @@
             el: document.querySelector('.container'),
             colorAccessor: function(d){ return d['Region']; },
             dimensions: dimensions,
-            tooltipFormatter: function(d){
-                return '<h1>' + d.State + '</h1>' +dimensions.map(function(dB){ return dB + ': ' + d[dB]; }).join('<br />');
-            }
+            useTooltip: false
         })
         .on('panelEnter', function() {
             console.log('panelEnter');
@@ -34,14 +58,31 @@
         })
         .on('dotEnter', function(d) {
             console.log('dotEnter', d);
+            renderList(d);
         })
         .on('dotLeave', function(d) {
             console.log('dotLeave', d);
         });
 
+    var renderList = function(datum){
+        d3.select('.state').text(datum.State);
+
+        var list = d3.select('.list')
+            .selectAll('div.item')
+            .data(dimensions);
+        list.enter().append('div').classed('item', true);
+        list.transition().style({
+                width: function(d){ return datum[d] / 300000  + 'px'; }
+            })
+            .text(function(d){ return d + ': '+ d3.format(',')(datum[d]); });
+        list.exit().remove();
+    }
+
     // Data from http://catalog.data.gov/dataset/energy-generation-by-state-and-technology-2009-69f4f
     d3.csv('../data/us_state_energy_generation_2009.csv', function(error, data){
         radviz.render(data);
+        console.log(data[0]);
+        renderList(data[0]);
     });
 
 </script>

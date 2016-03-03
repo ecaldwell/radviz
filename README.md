@@ -30,6 +30,7 @@ var radviz = radvizComponent()
         size: 400, // size of the whole SVG
         margin: 50, // margin around the circular panel, to leave some room for the labels
         dimensions: ['sepalLength', 'sepalWidth', 'petalLength', 'petalWidth'], // data keys to use as dimensions
+        useTooltip: true, // a simple tooltip component is provided
         tooltipFormatter: function(d){ return d.foo; }, // the datum for the hovered node is given as argument
         colorAccessor: function(d){ return d['species']; }, // dimension to use for coloring
         colorScale: d3.scale.ordinal().range(['skyblue', 'orange', 'lime']), // color palette

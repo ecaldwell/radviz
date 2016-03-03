@@ -10,7 +10,7 @@ var radvizComponent = function(){
         zoomFactor: 1,
         dotRadius: 6,
         useRepulsion: false,
-        useTooltips: true,
+        useTooltip: true,
         tooltipFormatter: function(d){ return d; }
     };
 
@@ -31,6 +31,7 @@ var radvizComponent = function(){
 
         var chartRadius = config.size / 2 - config.margin;
         var nodeCount = data.length;
+        var panelSize = config.size - config.margin * 2;
 
         var dimensionNodes = config.dimensions.map(function(d, i){
             var angle = thetaScale(i);
@@ -46,7 +47,7 @@ var radvizComponent = function(){
             });
         });
 
-        force.size([config.size, config.size])
+        force.size([panelSize, panelSize])
             .linkStrength(function(d){ return d.value; })
             .nodes(data.concat(dimensionNodes))
             .links(linksData)
@@ -107,19 +108,22 @@ var radvizComponent = function(){
             .attr({
                 r: config.dotRadius,
                 fill: function(d){ return config.colorScale(config.colorAccessor(d)); }
-            });
-
-            if(config.useTooltips){
-                nodes.on('mouseenter', function(d){
+            })
+            .on('mouseenter', function(d){
+                if(config.useTooltip){
                     var mouse = d3.mouse(config.el);
                     tooltip.setText(config.tooltipFormatter(d)).setPosition(mouse[0], mouse[1]).show();
-                    events.dotEnter(d);
-                })
-                .on('mouseout', function(d){
+                }
+                events.dotEnter(d);
+                this.classList.add('active');
+            })
+            .on('mouseout', function(d){
+                if(config.useTooltip){
                     tooltip.hide();
-                    events.dotLeave(d);
-                });
-            }
+                }
+                events.dotLeave(d);
+                this.classList.remove('active');
+            });
 
 
         // Labels
@@ -140,10 +144,17 @@ var radvizComponent = function(){
             .attr({
                 x: function(d){ return d.x; },
                 y: function(d){ return d.y; },
-                'text-anchor': function(d){ return (d.x > config.size / 2) ? 'start': 'end'; },
-                'dominant-baseline': function(d){ return (d.y > config.size / 2) ? 'hanging' : 'auto'; },
-                dx: function(d){ return (d.x > config.size / 2) ? '4px' : '-4px'; },
-                dy: function(d){ return (d.y > config.size / 2) ? '4px' : '-4px'; }
+                'text-anchor': function(d){
+                    if(d.x > (panelSize * 0.4) && d.x < (panelSize * 0.6)){
+                        return 'middle';
+                    }
+                    else{
+                        return (d.x > panelSize/ 2) ? 'start': 'end';
+                    }
+                },
+                'dominant-baseline': function(d){ return (d.y > panelSize * 0.6) ? 'hanging' : 'auto'; },
+                dx: function(d){ return (d.x > panelSize / 2) ? '6px' : '-6px'; },
+                dy: function(d){ return (d.y > panelSize * 0.6) ? '6px' : '-6px'; }
             })
             .text(function(d){ return d.name; });
 
