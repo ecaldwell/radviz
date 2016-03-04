@@ -48,7 +48,6 @@ var radvizComponent = function() {
     };
     var events = d3.dispatch("panelEnter", "panelLeave", "dotEnter", "dotLeave");
     var force = d3.layout.force().chargeDistance(0).charge(-60).friction(.5);
-    var tooltip = tooltipComponent("#tooltip");
     var render = function(data) {
         data = addNormalizedValues(data);
         var normalizeSuffix = "_normalized";
@@ -193,6 +192,10 @@ var radvizComponent = function() {
                 }
             });
         });
+        var tooltipContainer = d3.select(config.el).append("div").attr({
+            id: "radviz-tooltip"
+        });
+        var tooltip = tooltipComponent(tooltipContainer.node());
         return this;
     };
     var setConfig = function(_config) {
