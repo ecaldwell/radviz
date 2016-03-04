@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<script src="../lib/d3.js"></script>
-<script src="../src/component-utils.js"></script>
-<script src="../src/tooltip-component.js"></script>
-<script src="../src/radviz-component.js"></script>
-<!-- <script src="../radviz-min.js"></script> -->
-<link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8">
+    <script src="../lib/d3.js"></script>
+    <script src="../src/component-utils.js"></script>
+    <script src="../src/tooltip-component.js"></script>
+    <script src="../src/radviz-component.js"></script>
+    <!-- <script src="../radviz-min.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
 
-<div class="container"></div>
-<div id="tooltip"></div>
+    <div class="container"></div>
+    <div id="tooltip"></div>
 
-<script>
+    <script>
+        var dimensions = ['sepalLength', 'sepalWidth', 'petalLength', 'petalWidth'];
+        var radviz = radvizComponent()
+            .config({
+                el: document.querySelector('.container'),
+                colorAccessor: function(d) {
+                    return d['species'];
+                },
+                dimensions: dimensions,
+                size: 600,
+                margin: 100,
+                useRepulsion: true,
+                drawLinks: false,
+                tooltipFormatter: function(d) {
+                    return '<h1>' + d.species + '</h1>' + dimensions.map(function(dB) {
+                        return dB + ': ' + d[dB];
+                    }).join('<br />');
+                }
+            });
 
-    var dimensions = ['sepalLength', 'sepalWidth', 'petalLength', 'petalWidth'];
-    var radviz = radvizComponent()
-        .config({
-            el: document.querySelector('.container'),
-            colorAccessor: function(d){ return d['species']; },
-            dimensions: dimensions,
-            size: 600,
-            margin: 100,
-            useRepulsion: true,
-            drawLinks: false,
-            tooltipFormatter: function(d){
-                return '<h1>' + d.species + '</h1>' +dimensions.map(function(dB){ return dB + ': ' + d[dB]; }).join('<br />');
-            }
+        d3.json('../data/iris.json', function(error, data) {
+            radviz.render(data);
         });
-
-    d3.json('../data/iris.json', function(error, data){
-        radviz.render(data);
-    });
-
-</script>
+    </script>
 
 </body>
+
 </html>
