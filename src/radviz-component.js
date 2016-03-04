@@ -23,8 +23,6 @@ var radvizComponent = function() {
         .charge(-60)
         .friction(0.5);
 
-    var tooltip = tooltipComponent('#tooltip');
-
     var render = function(data) {
         data = addNormalizedValues(data);
         var normalizeSuffix = '_normalized';
@@ -218,6 +216,13 @@ var radvizComponent = function() {
                 }
             });
         });
+
+        var tooltipContainer = d3.select(config.el)
+            .append('div')
+            .attr({
+                id: 'radviz-tooltip'
+            });
+        var tooltip = tooltipComponent(tooltipContainer.node());
 
         return this;
     };
